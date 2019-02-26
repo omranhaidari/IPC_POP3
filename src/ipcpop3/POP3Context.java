@@ -21,6 +21,38 @@ public class POP3Context {
         this.state = state;
     }
 
+    public void run() {
+        String request = "";
+        /*String data;
+        do
+        {
+            data = in.read();
+            request += data;
+        }
+        while(!data.equals(""));*/
+
+        request = "QUIT";
+
+        switch(request.toLowerCase()) {
+            case "apop":
+                apop();
+                break;
+            case "stat":
+                stat();
+                break;
+            case "retr":
+                retr();
+                break;
+            case "quit":
+                quit();
+                break;
+        }
+    }
+
+    private String readLine() {
+        return "";
+    }
+
     public void apop() {
         state.apop();
     }

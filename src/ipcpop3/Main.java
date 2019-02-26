@@ -24,6 +24,8 @@ public class Main {
                         out = socket.getOutputStream();
                         BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                         POP3Context context = new POP3Context(in, out);
+                        context.setState(new Authorization1State(context));
+                        context.run();
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
