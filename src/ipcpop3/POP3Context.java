@@ -1,19 +1,20 @@
 package ipcpop3;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.Reader;
 import java.net.ServerSocket;
+import java.net.Socket;
 
 public class POP3Context {
+    private final Reader in;
+    private final OutputStream out;
     private POP3State state;
-    private ServerSocket serverSocket;
 
-    public POP3Context() {
-        try {
-            serverSocket = new ServerSocket(8025);
-            System.out.println("Attente de connexion...");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public POP3Context(Reader in, OutputStream out) {
+        this.in = in;
+        this.out = out;
     }
 
     public void setState(POP3State state) {
