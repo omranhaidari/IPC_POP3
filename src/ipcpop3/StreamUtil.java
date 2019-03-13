@@ -20,8 +20,11 @@ public class StreamUtil {
             if(data == '\r') {
                 crReceived = true;
             }
+            if(data != '\n' && crReceived) {
+                break;
+            }
         }
-        while(crReceived && data != '\n');
+        while(true);
 
         return line;
     }

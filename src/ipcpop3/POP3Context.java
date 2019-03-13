@@ -27,16 +27,12 @@ public class POP3Context {
         String request = "";
         while(running) {
             try {
-                char data;
-                do
-                {
-                    data = (char) in.read();
-                    request += data;
-                }
-                while(data != '\r');
+                request = StreamUtil.readLine(in);
             } catch (IOException e) {
                 e.printStackTrace();
             }
+
+            request.substring(0, request.length() - 1);
 
             switch (request.toLowerCase()) {
                 case "apop":
