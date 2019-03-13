@@ -1,9 +1,6 @@
 package ipcpop3;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.Reader;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -20,6 +17,10 @@ public class POP3Context {
 
     public void setState(POP3State state) {
         this.state = state;
+    }
+
+    public void init() throws IOException {
+        StreamUtil.writeLine(out, "+OK POP3 server ready");
     }
 
     public void run() {
@@ -80,5 +81,22 @@ public class POP3Context {
 
     public void quit() {
         state.quit();
+    }
+
+    public static POP3Context createContext(Socket socket) {
+        OutputStream out = null;
+        POP3Context context;
+        try {
+            out = socket.getOutputStream();
+            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            context = new POP3Context(in, out);
+            context.setState(new Authorization1State(context));
+
+            return context;
+        } catch (IOException e) {
+            e.printStackTrace();
+            // TODO Gérer déconnexion impromptue
+        }
+        return null;
     }
 }
