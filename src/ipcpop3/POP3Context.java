@@ -11,6 +11,7 @@ public class POP3Context {
     private final Reader in;
     private final OutputStream out;
     private POP3State state;
+    private boolean running = true;
 
     public POP3Context(Reader in, OutputStream out) {
         this.in = in;
@@ -23,30 +24,42 @@ public class POP3Context {
 
     public void run() {
         String request = "";
-        /*String data;
-        do
-        {
-            data = in.read();
-            request += data;
-        }
-        while(!data.equals(""));*/
+        while(running) {
+            try {
+                char data;
+                do
+                {
+                    data = (char) in.read();
+                    request += data;
+                }
+                while(data != '\r');
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
 
-        request = "QUIT";
-
-        switch(request.toLowerCase()) {
-            case "apop":
-                apop();
-                break;
-            case "stat":
-                stat();
-                break;
-            case "retr":
-                retr();
-                break;
-            case "quit":
-                quit();
-                break;
+            switch (request.toLowerCase()) {
+                case "apop":
+                    apop();
+                    break;
+                case "stat":
+                    stat();
+                    break;
+                case "retr":
+                    retr();
+                    break;
+                case "quit":
+                    quit();
+                    break;
+            }
         }
+    }
+
+    public boolean isRunning() {
+        return running;
+    }
+
+    public void setRunning(boolean running) {
+        this.running = running;
     }
 
     private String readLine() {
