@@ -9,26 +9,22 @@ import java.util.List;
 
 public class Mailbox {
     private List<Mail> mails;
+    private int mailboxSize;
 
     public Mailbox(String mailboxName) {
         // TODO Ouvrir le fichier de la boîte mail (avec gestion des erreurs)
 
-        try {
-            File file = new File("chemin_vers_mon_fichier");
-            BufferedReader reader = new BufferedReader(new FileReader(file));
-            try {
-                StreamUtil.readLine(reader);
 
-            } finally {
-                reader.close();
-            }
-
-        } catch (IOException ex) {
-            // erreur d'entrée/sortie ou fichier non trouvé
-            ex.printStackTrace();
-        }
         // TODO Charger tous les mails dans la liste
         mails = new ArrayList<>();
         
+    }
+
+    public int getMailCount() {
+        return mails.size();
+    }
+
+    public int getMailboxSize() {
+        return this.mailboxSize;
     }
 }
