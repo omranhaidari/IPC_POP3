@@ -1,18 +1,28 @@
 package ipcpop3;
 
+import ipcpop3.Utils.Observer;
+
 import java.io.*;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
 
 public class POP3Context {
+    private final Socket socket;
     private final Reader in;
+    private final InputStream inSocket;
     private final OutputStream out;
+    private final List<Observer> observers = new ArrayList<>();
+
     private POP3State state;
     private boolean running = true;
     private Mailbox mailbox;
 
-    public POP3Context(Reader in, OutputStream out) {
+    public POP3Context(Socket socket, Reader in, OutputStream out, InputStream inSocket) {
+        this.socket = socket;
         this.in = in;
         this.out = out;
+        this.inSocket = inSocket;
     }
 
     public void setState(POP3State state) {
@@ -24,18 +34,20 @@ public class POP3Context {
     }
 
     public void run() {
-        String request = "";
+        String request;
         while(running) {
+            request = "";
             try {
-                request = StreamUtil.readLine(in);
+                if(inSocket.available() > 0) {
+                    request = StreamUtil.readLine(in);
+                    request.substring(0, request.length() - 1); // FIXME Pourquoi ?
+                    System.out.println("User [" + this.hashCode() + "] sent : '" + request.trim() + "'");
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }
 
-            // substring : delete "\r" and split Transaction with their arguments
-            String[] transactionAndArgs = request.substring(0, request.length() - 1).split(" ");
-
-            switch (transactionAndArgs[0].toLowerCase()) {
+            switch (request.toLowerCase()) {
                 case "apop":
                     apop();
                     break;
@@ -43,11 +55,17 @@ public class POP3Context {
                     stat();
                     break;
                 case "retr":
-                    retr(Integer.parseInt(transactionAndArgs[1]));
+                    retr();
                     break;
                 case "quit":
                     quit();
                     break;
+            }
+
+            if(socket.isClosed()) {
+                this.setRunning(false);
+                this.notifyRemoveAll();
+                System.err.println("Connection closed"); // FIXME Ne Fonctionne pas
             }
         }
     }
@@ -72,8 +90,8 @@ public class POP3Context {
         state.stat();
     }
 
-    public void retr(int messageNumber) {
-        state.retr(messageNumber);
+    public void retr() {
+        state.retr();
     }
 
     public void quit() {
@@ -86,7 +104,8 @@ public class POP3Context {
         try {
             out = socket.getOutputStream();
             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            context = new POP3Context(in, out);
+            InputStream inSocket = socket.getInputStream();
+            context = new POP3Context(socket, in, out, inSocket);
             context.setState(new Authorization1State(context));
 
             return context;
@@ -95,6 +114,14 @@ public class POP3Context {
             // TODO Gérer déconnexion impromptue
         }
         return null;
+    }
+
+    public void addObserver(Observer observer) {
+        observers.add(observer);
+    }
+
+    public void notifyRemoveAll() {
+        observers.forEach(observer -> observer.remove(this));
     }
 
     public Mailbox getMailbox() {

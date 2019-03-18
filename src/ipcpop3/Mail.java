@@ -33,4 +33,8 @@ public class Mail {
                 ", body='" + body + '\'' +
                 '}';
     }
+
+    public State getState() {
+        return state;
+    }
 }
