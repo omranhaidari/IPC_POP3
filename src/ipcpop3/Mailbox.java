@@ -12,9 +12,11 @@ public class Mailbox {
     private OutputStream out;
     private FileLock fli;
     private FileLock flo;
+    private int mailboxSize;
 
     public Mailbox(String mailboxName) {
         // TODO Ouvrir le fichier de la boîte mail (avec gestion des erreurs)
+
 
         // TODO Charger tous les mails dans la liste
         mails = new ArrayList<>();
@@ -27,5 +29,13 @@ public class Mailbox {
         this.flo = flo;
 
         this.mails = new ArrayList<>();
+    }
+
+    public int getMailCount() {
+        return mails.size();
+    }
+
+    public int getMailboxSize() {
+        return this.mailboxSize;
     }
 }

@@ -1,7 +1,6 @@
 package ipcpop3;
 
 import java.io.*;
-import java.net.ServerSocket;
 import java.net.Socket;
 
 public class POP3Context {
@@ -9,6 +8,7 @@ public class POP3Context {
     private final OutputStream out;
     private POP3State state;
     private boolean running = true;
+    private Mailbox mailbox;
 
     public POP3Context(Reader in, OutputStream out) {
         this.in = in;
@@ -32,9 +32,10 @@ public class POP3Context {
                 e.printStackTrace();
             }
 
-            request.substring(0, request.length() - 1);
+            // substring : delete "\r" and split Transaction with their arguments
+            String[] transactionAndArgs = request.substring(0, request.length() - 1).split(" ");
 
-            switch (request.toLowerCase()) {
+            switch (transactionAndArgs[0].toLowerCase()) {
                 case "apop":
                     apop();
                     break;
@@ -42,7 +43,7 @@ public class POP3Context {
                     stat();
                     break;
                 case "retr":
-                    retr();
+                    retr(Integer.parseInt(transactionAndArgs[1]));
                     break;
                 case "quit":
                     quit();
@@ -71,8 +72,8 @@ public class POP3Context {
         state.stat();
     }
 
-    public void retr() {
-        state.retr();
+    public void retr(int messageNumber) {
+        state.retr(messageNumber);
     }
 
     public void quit() {
@@ -94,5 +95,13 @@ public class POP3Context {
             // TODO Gérer déconnexion impromptue
         }
         return null;
+    }
+
+    public Mailbox getMailbox() {
+        return mailbox;
+    }
+
+    public void setMailbox(Mailbox mailbox) {
+        this.mailbox = mailbox;
     }
 }

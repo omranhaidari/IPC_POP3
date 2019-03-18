@@ -5,6 +5,7 @@
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/ipcpop3/Authorization1State.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/ipcpop3/Authorization1State.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/ipcpop3/Mailbox.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/ipcpop3/Mailbox.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ipcpop3/POP3Context.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/ipcpop3/POP3Context.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -12,6 +13,39 @@
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FUSProjectUsageTrigger">
+    <session id="1217820901">
+      <usages-collector id="statistics.lifecycle.project">
+        <counts>
+          <entry key="project.open.time.2" value="1" />
+          <entry key="project.open.time.51" value="1" />
+          <entry key="project.opened" value="2" />
+        </counts>
+      </usages-collector>
+      <usages-collector id="statistics.file.extensions.edit">
+        <counts>
+          <entry key="dummy" value="6" />
+          <entry key="java" value="1461" />
+        </counts>
+      </usages-collector>
+      <usages-collector id="statistics.file.types.edit">
+        <counts>
+          <entry key="JAVA" value="1461" />
+          <entry key="PLAIN_TEXT" value="6" />
+        </counts>
+      </usages-collector>
+      <usages-collector id="statistics.file.extensions.open">
+        <counts>
+          <entry key="java" value="3" />
+        </counts>
+      </usages-collector>
+      <usages-collector id="statistics.file.types.open">
+        <counts>
+          <entry key="JAVA" value="3" />
+        </counts>
+      </usages-collector>
+    </session>
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
@@ -48,6 +82,8 @@
               <caret line="28" selection-start-line="28" selection-end-line="28" />
               <folding>
                 <element signature="imports" expanded="true" />
+                <element signature="e#965#966#0" expanded="true" />
+                <element signature="e#1014#1015#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -111,10 +147,8 @@
         <entry file="file://$PROJECT_DIR$/src/ipcpop3/TransactionState.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="238">
-              <caret line="21" column="32" selection-start-line="21" selection-start-column="32" selection-end-line="21" selection-end-column="32" />
+              <caret line="47" column="32" selection-start-line="47" selection-start-column="32" selection-end-line="47" selection-end-column="32" />
               <folding>
-                <element signature="e#173#174#0" expanded="true" />
-                <element signature="e#227#228#0" expanded="true" />
                 <element signature="e#349#350#0" expanded="true" />
                 <element signature="e#403#404#0" expanded="true" />
                 <element signature="e#429#430#0" expanded="true" />
@@ -148,6 +182,7 @@
         <option value="$PROJECT_DIR$/src/ipcpop3/Authorization2State.java" />
         <option value="$PROJECT_DIR$/src/ipcpop3/TransactionState.java" />
         <option value="$PROJECT_DIR$/src/ipcpop3/ReaderUtil.java" />
+        <option value="$PROJECT_DIR$/src/ipcpop3/StreamUtil.java" />
         <option value="$PROJECT_DIR$/src/ipcpop3/Main.java" />
         <option value="$PROJECT_DIR$/src/ipcpop3/Mail.java" />
         <option value="$PROJECT_DIR$/.gitignore" />
@@ -155,6 +190,7 @@
         <option value="$PROJECT_DIR$/src/ipcpop3/POP3Context.java" />
         <option value="$PROJECT_DIR$/src/ipcpop3/Mailbox.java" />
         <option value="$PROJECT_DIR$/src/ipcpop3/Authorization1State.java" />
+        <option value="$PROJECT_DIR$/src/ipcpop3/POP3Context.java" />
       </list>
     </option>
   </component>
@@ -169,6 +205,8 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="AndroidView" />
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -249,6 +287,7 @@
       <workItem from="1552468928820" duration="3887000" />
       <workItem from="1552478231806" duration="49000" />
       <workItem from="1552900030909" duration="3350000" />
+      <workItem from="1552900920230" duration="639000" />
     </task>
     <servers />
   </component>
@@ -259,7 +298,7 @@
     <frame x="-7" y="-7" width="1550" height="838" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.25973153" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.25809062" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Image Layers" order="2" />
       <window_info id="Designer" order="3" />
@@ -350,42 +389,39 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/ipcpop3/Authorization2State.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="187">
-          <caret line="20" column="32" selection-start-line="20" selection-start-column="32" selection-end-line="20" selection-end-column="32" />
+        <state relative-caret-position="357">
+          <caret line="21" column="32" selection-start-line="21" selection-start-column="32" selection-end-line="21" selection-end-column="32" />
           <folding>
             <element signature="e#123#124#0" expanded="true" />
             <element signature="e#153#154#0" expanded="true" />
-            <element signature="e#179#180#0" expanded="true" />
-            <element signature="e#236#237#0" expanded="true" />
-            <element signature="e#262#263#0" expanded="true" />
             <element signature="e#319#320#0" expanded="true" />
-            <element signature="e#345#346#0" expanded="true" />
+            <element signature="e#376#377#0" expanded="true" />
             <element signature="e#402#403#0" expanded="true" />
-            <element signature="e#428#429#0" expanded="true" />
-            <element signature="e#485#486#0" expanded="true" />
+            <element signature="e#459#460#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/ipcpop3/TransactionState.java">
+    <entry file="file://$PROJECT_DIR$/src/ipcpop3/Main.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="238">
-          <caret line="21" column="32" selection-start-line="21" selection-start-column="32" selection-end-line="21" selection-end-column="32" />
+        <state relative-caret-position="306">
+          <caret line="25" column="48" selection-start-line="25" selection-start-column="48" selection-end-line="25" selection-end-column="48" />
           <folding>
-            <element signature="e#173#174#0" expanded="true" />
-            <element signature="e#227#228#0" expanded="true" />
-            <element signature="e#349#350#0" expanded="true" />
-            <element signature="e#403#404#0" expanded="true" />
-            <element signature="e#429#430#0" expanded="true" />
-            <element signature="e#483#484#0" expanded="true" />
+            <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/ipcpop3/POP3State.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="170">
-          <caret line="12" column="13" selection-start-line="12" selection-start-column="13" selection-end-line="12" selection-end-column="13" />
+        <state relative-caret-position="238">
+          <caret line="47" column="32" selection-start-line="47" selection-start-column="32" selection-end-line="47" selection-end-column="32" />
+          <folding>
+            <element signature="e#349#350#0" expanded="true" />
+            <element signature="e#403#404#0" expanded="true" />
+            <element signature="e#429#430#0" expanded="true" />
+            <element signature="e#483#484#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

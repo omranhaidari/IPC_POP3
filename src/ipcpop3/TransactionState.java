@@ -11,12 +11,23 @@ public class TransactionState extends POP3State {
 
     public void stat() {
         System.out.println("STAT Transaction");
-        // Stat
+
+        int nbMessage = this.context.getMailbox().getMailCount(); // nombre de message dans le mail
+        int sizeMessage = this.context.getMailbox().getMailboxSize(); // taille du fichier en octets
+        System.out.println("+OK" + " " + nbMessage + " " + sizeMessage);
     }
 
-    public void retr() {
-        System.out.println("RETR Transaction");
+    public void retr(int messageNumber) {
+        Mail mail = new Mail(); //= context.getMailbox().getMails().get(messageNumber);
+        try {
+            String message = mail.toString();
+            System.out.println("+OK " + message.length()/8 + " octets follow");
+            System.out.println(message);
+        } catch (Exception e) {
+            System.out.println("-ERR numéro de message invalide");
+        }
     }
+
 
     public void quit() {
         System.out.println("QUIT Transaction");
