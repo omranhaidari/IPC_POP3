@@ -38,4 +38,8 @@ public class Mailbox {
     public int getMailboxSize() {
         return this.mailboxSize;
     }
+
+    public Mail getMail(int mailNumber) {
+        return mails.get(mailNumber);
+    }
 }
