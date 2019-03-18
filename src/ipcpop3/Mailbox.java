@@ -1,8 +1,8 @@
 package ipcpop3;
 
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.nio.channels.FileLock;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,6 +29,51 @@ public class Mailbox {
         this.flo = flo;
 
         this.mails = new ArrayList<>();
+
+        this.readMessages();
+    }
+
+    private void readMessages() {
+        String from = "";
+        String to = "";
+        String subject = "";
+        String date = "";
+        String messageId = "";
+        String body = "";
+
+        String data = "";
+
+        Reader reader = new InputStreamReader(in);
+        while(true) {
+            try {
+                data = StreamUtil.readLine(reader);
+                String[] headerValue = data.split(": ");
+                switch(headerValue[0]) {
+                    case "From":
+                        from = headerValue[1];
+                        break;
+                    case "To":
+                        to = headerValue[1];
+                        break;
+                    case "Subject":
+                        subject = headerValue[1];
+                        break;
+                    case "Date":
+                        date = headerValue[1];
+                        break;
+                    case "Message-ID":
+                        messageId = headerValue[1];
+                        break;
+                    default:
+                        if(data.equals(".")) {
+                            mails.add(new Mail(from, to, subject, date, messageId, body));
+                        }
+                        body += data;
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public int getMailCount() {

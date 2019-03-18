@@ -11,6 +11,16 @@ public class Mail {
     private String body; // Le corps du mail
     private State state;
 
+    public Mail(String from, String to, String subject, Date date, String messageID, String body) {
+        this.from = from;
+        this.to = to;
+        this.subject = subject;
+        this.date = date;
+        this.messageID = messageID;
+        this.body = body;
+        this.state = State.ACTIVE; // Fixme
+    }
+
     @Override
     public String toString() {
         // TODO : check with rfc
