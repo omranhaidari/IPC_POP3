@@ -36,7 +36,7 @@ public class Authorization1State extends POP3State {
         System.out.println("STAT Authorization1");
     }
 
-    public void retr() {
+    public void retr(int messageNumber) {
         System.out.println("RETR Authorization1");
     }
 
