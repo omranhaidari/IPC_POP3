@@ -1,34 +1,45 @@
 package ipcpop3;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.channels.FileLock;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Mailbox {
     private List<Mail> mails;
+    private InputStream in;
+    private OutputStream out;
+    private FileLock fli;
+    private FileLock flo;
+    private int mailboxSize;
 
     public Mailbox(String mailboxName) {
         // TODO Ouvrir le fichier de la boîte mail (avec gestion des erreurs)
 
-        try {
-            File file = new File("chemin_vers_mon_fichier");
-            BufferedReader reader = new BufferedReader(new FileReader(file));
-            try {
-                StreamUtil.readLine(reader);
 
-            } finally {
-                reader.close();
-            }
-
-        } catch (IOException ex) {
-            // erreur d'entrée/sortie ou fichier non trouvé
-            ex.printStackTrace();
-        }
         // TODO Charger tous les mails dans la liste
         mails = new ArrayList<>();
-        
+    }
+
+    public Mailbox(InputStream in, FileLock fli, OutputStream out, FileLock flo) {
+        this.in = in;
+        this.out = out;
+        this.fli = fli;
+        this.flo = flo;
+
+        this.mails = new ArrayList<>();
+    }
+
+    public int getMailCount() {
+        return mails.size();
+    }
+
+    public int getMailboxSize() {
+        return this.mailboxSize;
+    }
+
+    public Mail getMail(int mailNumber) {
+        return mails.get(mailNumber);
     }
 }

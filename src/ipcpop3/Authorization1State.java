@@ -16,7 +16,13 @@ public class Authorization1State extends POP3State {
 
         try {
             FileInputStream in = new FileInputStream(user + ".mail");
-            FileLock fl = in.getChannel().lock();
+            FileOutputStream out = new FileOutputStream(user + ".mail");
+            FileLock fli = in.getChannel().lock();
+            FileLock flo = out.getChannel().lock();
+
+            Mailbox mailbox = new Mailbox(in, fli, out, flo);
+            context.setMailbox(mailbox);
+
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -30,7 +36,7 @@ public class Authorization1State extends POP3State {
         System.out.println("STAT Authorization1");
     }
 
-    public void retr() {
+    public void retr(int messageNumber) {
         System.out.println("RETR Authorization1");
     }
 
