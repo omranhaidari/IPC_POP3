@@ -9,6 +9,7 @@ public class POP3Context {
     private final OutputStream out;
     private POP3State state;
     private boolean running = true;
+    private Mailbox mailbox;
 
     public POP3Context(Reader in, OutputStream out) {
         this.in = in;
@@ -94,5 +95,13 @@ public class POP3Context {
             // TODO Gérer déconnexion impromptue
         }
         return null;
+    }
+
+    public Mailbox getMailbox() {
+        return mailbox;
+    }
+
+    public void setMailbox(Mailbox mailbox) {
+        this.mailbox = mailbox;
     }
 }
