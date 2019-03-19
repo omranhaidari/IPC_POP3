@@ -5,7 +5,7 @@ public class TransactionState extends POP3State {
         super(context);
     }
 
-    public void apop() {
+    public void apop(String username, String password) {
         System.out.println("APOP Transaction");
     }
 
@@ -20,7 +20,7 @@ public class TransactionState extends POP3State {
     public void retr(int messageNumber) {
         Mail mail = context.getMailbox().getMail(messageNumber);
         try {
-            if (mail.getState().equals(State.DELETED)) new Exception("mail " + messageNumber + " is deleted");
+            if (mail.getState().equals(MailStateEnum.DELETED)) new Exception("mail " + messageNumber + " is deleted");
             String message = mail.toString();
             System.out.println("+OK " + message.length()/8 + " octets follow");
             System.out.println(message);

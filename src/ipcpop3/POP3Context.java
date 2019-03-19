@@ -1,6 +1,8 @@
 package ipcpop3;
 
 import ipcpop3.Utils.Observer;
+import ipcpop3.Utils.POP3Utils;
+import ipcpop3.Utils.StreamUtil;
 
 import java.io.*;
 import java.net.Socket;
@@ -30,11 +32,13 @@ public class POP3Context {
     }
 
     public void init() throws IOException {
-        StreamUtil.writeLine(out, "+OK POP3 server ready");
+        StreamUtil.writeLine(out, "+OK POP3 server ready " + POP3Utils.createUniqueTimestamp());
     }
 
     public void run() {
         String request;
+        int numeroMessage = -1;
+        String username = null, password = null;
         while(running) {
             request = "";
             try {
@@ -49,23 +53,23 @@ public class POP3Context {
 
             switch (request.toLowerCase()) {
                 case "apop":
-                    apop();
+                    apop(username, password);
                     break;
                 case "stat":
                     stat();
                     break;
                 case "retr":
-                    retr();
+                    retr(numeroMessage);
                     break;
                 case "quit":
                     quit();
                     break;
             }
 
-            if(socket.isClosed()) {
-                this.setRunning(false);
-                this.notifyRemoveAll();
-                System.err.println("Connection closed"); // FIXME Ne Fonctionne pas
+            if(!isRunning()) { // FIXME Ne Fonctionne pas -> Il faudrait tester si in.read() == -1
+                this.notifyAllForRemoval();
+                closing();
+                System.err.println("Connection closed");
             }
         }
     }
@@ -78,20 +82,31 @@ public class POP3Context {
         this.running = running;
     }
 
+    private void closing() {
+        try {
+            in.close();
+            inSocket.close();
+            out.close();
+            socket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     private String readLine() {
         return "";
     }
 
-    public void apop() {
-        state.apop();
+    public void apop(String username, String password) {
+        state.apop(username, password);
     }
 
     public void stat() {
         state.stat();
     }
 
-    public void retr() {
-        state.retr();
+    public void retr(int numeroMessage) {
+        state.retr(numeroMessage);
     }
 
     public void quit() {
@@ -120,7 +135,7 @@ public class POP3Context {
         observers.add(observer);
     }
 
-    public void notifyRemoveAll() {
+    public void notifyAllForRemoval() {
         observers.forEach(observer -> observer.remove(this));
     }
 

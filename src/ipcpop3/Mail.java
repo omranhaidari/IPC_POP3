@@ -9,7 +9,7 @@ public class Mail {
     private Date date;
     private String messageID;
     private String body; // Le corps du mail
-    private State state;
+    private MailStateEnum state;
 
     public Mail(String from, String to, String subject, Date date, String messageID, String body) {
         this.from = from;
@@ -18,7 +18,7 @@ public class Mail {
         this.date = date;
         this.messageID = messageID;
         this.body = body;
-        this.state = State.ACTIVE; // Fixme
+        this.state = MailStateEnum.ACTIVE; // Fixme
     }
 
     @Override
@@ -34,7 +34,7 @@ public class Mail {
                 '}';
     }
 
-    public State getState() {
+    public MailStateEnum getState() {
         return state;
     }
 }

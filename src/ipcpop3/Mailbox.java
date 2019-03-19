@@ -1,8 +1,12 @@
 package ipcpop3;
 
+import ipcpop3.Utils.POP3Utils;
+import ipcpop3.Utils.StreamUtil;
+
 import java.io.*;
 import java.nio.channels.FileLock;
-import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,7 +41,7 @@ public class Mailbox {
         String from = "";
         String to = "";
         String subject = "";
-        String date = "";
+        Date date = null;
         String messageId = "";
         String body = "";
 
@@ -59,7 +63,7 @@ public class Mailbox {
                         subject = headerValue[1];
                         break;
                     case "Date":
-                        date = headerValue[1];
+                        date = POP3Utils.DATE_FORMATTER.parse(headerValue[1]);
                         break;
                     case "Message-ID":
                         messageId = headerValue[1];
@@ -70,7 +74,7 @@ public class Mailbox {
                         }
                         body += data;
                 }
-            } catch (IOException e) {
+            } catch (IOException | ParseException e) {
                 e.printStackTrace();
             }
         }

@@ -1,6 +1,6 @@
 package ipcpop3;
 
-public enum State {
+public enum MailStateEnum {
     ACTIVE,
     DELETED
 }

@@ -1,4 +1,4 @@
-package ipcpop3;
+package ipcpop3.Utils;
 
 import java.io.IOException;
 import java.io.OutputStream;

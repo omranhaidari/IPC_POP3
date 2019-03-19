@@ -30,8 +30,7 @@ public class Main {
                     // Lance le nouveau Thread
                     new Thread(() -> {
                         try {
-                            context.init();
-                            // Gère création du context et l'envoi de la première réponse
+                            context.init(); // Gère création du context et l'envoi de la première réponse
                             context.run();
                         } catch (IOException e) {
                             e.printStackTrace();

@@ -8,7 +8,7 @@ public class Authorization1State extends POP3State {
         super(context);
     }
 
-    public void apop() {
+    public void apop(String username, String password) {
         System.out.println("APOP Authorization1");
 
         String user = "user";
