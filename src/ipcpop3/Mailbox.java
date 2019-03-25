@@ -27,11 +27,9 @@ public class Mailbox {
         mails = new ArrayList<>();
     }
 
-    public Mailbox(InputStream in, FileLock fli, OutputStream out, FileLock flo) {
+    public Mailbox(InputStream in, OutputStream out) {
         this.in = in;
         this.out = out;
-        this.fli = fli;
-        this.flo = flo;
 
         this.mails = new ArrayList<>();
 

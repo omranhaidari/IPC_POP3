@@ -1,5 +1,7 @@
 package ipcpop3;
 
+import ipcpop3.Utils.POP3Utils;
+
 import java.io.*;
 import java.nio.channels.FileLock;
 
@@ -11,16 +13,17 @@ public class Authorization1State extends POP3State {
     public void apop(String username, String password) {
         System.out.println("APOP Authorization1");
 
-        String user = "user";
-        String pass = "pass";
+        String user = username;
+        String pass = password;
+        String mailboxPath = POP3Utils.MAILBOX_PATH + user + POP3Utils.MAILBOX_EXTENSION;
 
         try {
-            FileInputStream in = new FileInputStream(user + ".mail");
-            FileOutputStream out = new FileOutputStream(user + ".mail");
-            FileLock fli = in.getChannel().lock();
-            FileLock flo = out.getChannel().lock();
+            FileInputStream in = new FileInputStream(mailboxPath);
+            FileOutputStream out = new FileOutputStream(mailboxPath);
+//            FileLock fli = in.getChannel().lock(); // FIXME
+//            FileLock flo = out.getChannel().lock(); // FIXME
 
-            Mailbox mailbox = new Mailbox(in, fli, out, flo);
+            Mailbox mailbox = new Mailbox(in, out);
             context.setMailbox(mailbox);
 
         } catch (FileNotFoundException e) {
@@ -36,7 +39,7 @@ public class Authorization1State extends POP3State {
         System.out.println("STAT Authorization1");
     }
 
-    public void retr(int messageNumber) {
+    public void retr(String messageNumber) {
         System.out.println("RETR Authorization1");
     }
 

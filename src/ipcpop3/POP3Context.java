@@ -41,31 +41,36 @@ public class POP3Context {
         String request;
         int numeroMessage = -1;
         String username = null, password = null;
+        String[] command;
         while(running) {
             request = "";
             try {
                 if(inSocket.available() > 0) {
                     request = StreamUtil.readLine(in);
-                    request.substring(0, request.length() - 1); // FIXME Pourquoi ?
+                    request = request.trim();
                     System.out.println("User [" + this.hashCode() + "] sent : '" + request.trim() + "'");
                 }
             } catch (IOException e) {
                 e.printStackTrace();
             }
 
-            switch (request.toLowerCase()) {
-                case "apop":
-                    apop(username, password);
-                    break;
-                case "stat":
-                    stat();
-                    break;
-                case "retr":
-                    retr(numeroMessage);
-                    break;
-                case "quit":
-                    quit();
-                    break;
+            if(!"".equals(request)) {
+                command = getCommand(request);
+
+                switch (command[0].toLowerCase()) {
+                    case "apop":
+                        apop(command[1], command[2]);
+                        break;
+                    case "stat":
+                        stat();
+                        break;
+                    case "retr":
+                        retr(command[1]);
+                        break;
+                    case "quit":
+                        quit();
+                        break;
+                }
             }
 
             if(!isRunning()) { // FIXME Ne Fonctionne pas -> Il faudrait tester si in.read() == -1
@@ -107,7 +112,7 @@ public class POP3Context {
         state.stat();
     }
 
-    public void retr(int numeroMessage) {
+    public void retr(String numeroMessage) {
         state.retr(numeroMessage);
     }
 
@@ -147,5 +152,9 @@ public class POP3Context {
 
     public void setMailbox(Mailbox mailbox) {
         this.mailbox = mailbox;
+    }
+
+    private String[] getCommand(String request) {
+        return request.split(" ");
     }
 }

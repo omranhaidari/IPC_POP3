@@ -17,7 +17,8 @@ public class TransactionState extends POP3State {
         System.out.println("+OK" + " " + nbMessage + " " + sizeMessage);
     }
 
-    public void retr(int messageNumber) {
+    public void retr(String msgNumber) {
+        int messageNumber = Integer.parseInt(msgNumber);
         Mail mail = context.getMailbox().getMail(messageNumber);
         try {
             if (mail.getState().equals(MailStateEnum.DELETED)) new Exception("mail " + messageNumber + " is deleted");
