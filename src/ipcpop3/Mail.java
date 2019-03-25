@@ -23,15 +23,13 @@ public class Mail {
 
     @Override
     public String toString() {
-        // TODO : check with rfc
-        return "Mail{" +
-                "from='" + from + '\'' +
-                ", to='" + to + '\'' +
-                ", subject='" + subject + '\'' +
-                ", date=" + date +
-                ", messageID='" + messageID + '\'' +
-                ", body='" + body + '\'' +
-                '}';
+        return "From: " + from + '\n' +
+                "To: " + to + '\n' +
+                "Subject: " + subject + '\n' +
+                "Date: " + date + '\n' +
+                "MessageID: " + messageID + '\n' +
+                body + '\n' +
+                '.' + '\n';
     }
 
     public MailStateEnum getState() {

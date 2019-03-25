@@ -1,5 +1,7 @@
 package ipcpop3;
 
+import java.io.IOException;
+
 public class TransactionState extends POP3State {
     public TransactionState(POP3Context context) {
         super(context);
@@ -21,7 +23,8 @@ public class TransactionState extends POP3State {
         int messageNumber = Integer.parseInt(msgNumber);
         Mail mail = context.getMailbox().getMail(messageNumber);
         try {
-            if (mail.getState().equals(MailStateEnum.DELETED)) new Exception("mail " + messageNumber + " is deleted");
+            if (mail.getState().equals(MailStateEnum.DELETED))
+                throw new Exception("mail " + messageNumber + " is deleted");
             String message = mail.toString();
             System.out.println("+OK " + message.length()/8 + " octets follow");
             System.out.println(message);
@@ -33,5 +36,11 @@ public class TransactionState extends POP3State {
 
     public void quit() {
         System.out.println("QUIT Transaction");
+        try {
+            context.getMailbox().write();
+            context.getMailbox().close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

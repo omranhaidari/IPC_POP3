@@ -78,6 +78,25 @@ public class Mailbox {
             }
         }
     }
+    public void write() {
+        try {
+            out.write("".getBytes());
+            for(Mail mail : mails) {
+                if(!mail.getState().equals(MailStateEnum.DELETED)) {
+                    out.write(mail.toString().getBytes());
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void close() throws IOException {
+        this.in.close();
+        this.fli.close();
+        this.out.close();
+        this.flo.close();
+    }
 
     public int getMailCount() {
         return mails.size();
