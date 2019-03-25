@@ -8,6 +8,7 @@ import java.nio.channels.FileLock;
 import java.util.Date;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class Mailbox {
@@ -51,7 +52,7 @@ public class Mailbox {
         while(true) {
             try {
                 data = StreamUtil.readLine(reader);
-                String[] headerValue = data.split(": ");
+                String[] headerValue = getHeader(data);
                 switch(headerValue[0]) {
                     case "From":
                         from = headerValue[1];
@@ -109,5 +110,14 @@ public class Mailbox {
 
     public Mail getMail(int mailNumber) {
         return mails.get(mailNumber);
+    }
+
+    /**
+     * Récupère tout ce qui suit le nom du header (même si ça contient des ':')
+     * @param data
+     * @return
+     */
+    private String[] getHeader(String data) {
+        return data.split(": ", 2);
     }
 }

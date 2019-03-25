@@ -19,6 +19,7 @@ public class POP3Context {
     private POP3State state;
     private boolean running = true;
     private Mailbox mailbox;
+    private String uniqueTimestamp;
 
     public POP3Context(Socket socket, Reader in, OutputStream out, InputStream inSocket) {
         this.socket = socket;
@@ -32,7 +33,8 @@ public class POP3Context {
     }
 
     public void init() throws IOException {
-        StreamUtil.writeLine(out, "+OK POP3 server ready " + POP3Utils.createUniqueTimestamp());
+        this.uniqueTimestamp = POP3Utils.createUniqueTimestamp();
+        StreamUtil.writeLine(out, "+OK POP3 server ready " + this.uniqueTimestamp);
     }
 
     public void run() {
