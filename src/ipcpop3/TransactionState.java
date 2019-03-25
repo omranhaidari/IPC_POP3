@@ -1,5 +1,7 @@
 package ipcpop3;
 
+import ipcpop3.Utils.StreamUtil;
+
 import java.io.IOException;
 
 public class TransactionState extends POP3State {
@@ -7,19 +9,21 @@ public class TransactionState extends POP3State {
         super(context);
     }
 
-    public void apop(String username, String password) {
+    public void apop(String username, String password) throws IOException {
         System.out.println("APOP Transaction");
     }
 
-    public void stat() {
+    public void stat() throws IOException {
         System.out.println("STAT Transaction");
 
         int nbMessage = this.context.getMailbox().getMailCount(); // nombre de message dans le mail
         int sizeMessage = this.context.getMailbox().getMailboxSize(); // taille du fichier en octets
-        System.out.println("+OK" + " " + nbMessage + " " + sizeMessage);
+        String returnMsg = "+OK" + " " + nbMessage + " " + sizeMessage;
+//        System.out.println();
+        StreamUtil.writeLine(this.context.getOutputStream(), returnMsg);
     }
 
-    public void retr(String msgNumber) {
+    public void retr(String msgNumber) throws IOException {
         int messageNumber = Integer.parseInt(msgNumber);
         Mail mail = context.getMailbox().getMail(messageNumber);
         try {
@@ -34,7 +38,7 @@ public class TransactionState extends POP3State {
     }
 
 
-    public void quit() {
+    public void quit() throws IOException {
         System.out.println("QUIT Transaction");
         try {
             context.getMailbox().write();

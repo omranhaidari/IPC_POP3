@@ -7,6 +7,7 @@ import ipcpop3.Utils.StreamUtil;
 import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class POP3Context {
@@ -57,20 +58,32 @@ public class POP3Context {
             if(!"".equals(request)) {
                 command = getCommand(request);
 
-                switch (command[0].toLowerCase()) {
-                    case "apop":
-                        apop(command[1], command[2]);
-                        break;
-                    case "stat":
-                        stat();
-                        break;
-                    case "retr":
-                        retr(command[1]);
-                        break;
-                    case "quit":
-                        quit();
-                        break;
+                try {
+                    switch (command[0].toLowerCase()) {
+                        case "apop":
+                            apop(command[1], command[2]);
+                            break;
+                        case "stat":
+                            stat();
+                            break;
+                        case "retr":
+                            retr(command[1]);
+                            break;
+                        case "quit":
+                            quit();
+                            break;
+                        case "help":
+                            help();
+                            break;
+                        default:
+                            unknownCommand();
+                            break;
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    setRunning(false);
                 }
+
             }
 
             if(!isRunning()) { // FIXME Ne Fonctionne pas -> Il faudrait tester si in.read() == -1
@@ -104,20 +117,29 @@ public class POP3Context {
         return "";
     }
 
-    public void apop(String username, String password) {
+    public void apop(String username, String password) throws IOException {
         state.apop(username, password);
     }
 
-    public void stat() {
+    public void stat() throws IOException {
         state.stat();
     }
 
-    public void retr(String numeroMessage) {
+    public void retr(String numeroMessage) throws IOException {
         state.retr(numeroMessage);
     }
 
-    public void quit() {
+    public void quit() throws IOException {
         state.quit();
+    }
+
+    public void help() throws IOException {
+        String availableCommands = "APOP, STAT, RETR [msg], QUIT"; // FIXME Utiliser POP3Utils.AVAILABLE_COMMANDS
+        StreamUtil.writeLine(this.getOutputStream(), "+OK available commands are : " + availableCommands);
+    }
+
+    public void unknownCommand() throws IOException {
+        StreamUtil.writeLine(this.getOutputStream(), "-ERR unknown command");
     }
 
     public static POP3Context createContext(Socket socket) {
@@ -156,5 +178,9 @@ public class POP3Context {
 
     private String[] getCommand(String request) {
         return request.split(" ");
+    }
+
+    public OutputStream getOutputStream() {
+        return this.out;
     }
 }

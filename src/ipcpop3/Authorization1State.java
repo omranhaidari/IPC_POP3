@@ -1,6 +1,7 @@
 package ipcpop3;
 
 import ipcpop3.Utils.POP3Utils;
+import ipcpop3.Utils.StreamUtil;
 
 import java.io.*;
 import java.nio.channels.FileLock;
@@ -10,40 +11,44 @@ public class Authorization1State extends POP3State {
         super(context);
     }
 
-    public void apop(String username, String password) {
+    public void apop(String username, String password) throws IOException {
         System.out.println("APOP Authorization1");
 
         String user = username;
         String pass = password;
-        String mailboxPath = POP3Utils.MAILBOX_PATH + user + POP3Utils.MAILBOX_EXTENSION;
+//        File mailboxFile = new File(mailboxPath);
 
-        try {
-            FileInputStream in = new FileInputStream(mailboxPath);
-            FileOutputStream out = new FileOutputStream(mailboxPath);
-//            FileLock fli = in.getChannel().lock(); // FIXME
-//            FileLock flo = out.getChannel().lock(); // FIXME
-
-            Mailbox mailbox = new Mailbox(in, out);
-            context.setMailbox(mailbox);
-
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+        if(true) { //mailboxFile.exists()) { FIXME Comment tester l'existence ?
+//            mailboxFile = null;
+            if(true) { // FIXME Si le mdp est correct
+                try {
+                    Mailbox mailbox = Mailbox.open(user);
+                    if(mailbox == null) {
+                        // Alors la mailbox est lockée
+                    } else {
+                        context.setMailbox(mailbox);
+                        StreamUtil.writeLine(this.context.getOutputStream(), "+OK ");
+                        context.setState(new TransactionState(context));
+                        return;
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
 
-        context.setState(new TransactionState(context));
+        StreamUtil.writeLine(this.context.getOutputStream(), "+ERR permission denied");
     }
 
-    public void stat() {
+    public void stat() throws IOException {
         System.out.println("STAT Authorization1");
     }
 
-    public void retr(String messageNumber) {
+    public void retr(String messageNumber) throws IOException {
         System.out.println("RETR Authorization1");
     }
 
-    public void quit() {
+    public void quit() throws IOException {
         System.out.println("QUIT Authorization1");
         context.setRunning(false);
     }

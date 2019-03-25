@@ -8,23 +8,26 @@ import java.nio.channels.FileLock;
 import java.util.Date;
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public class Mailbox {
     private List<Mail> mails;
     private InputStream in;
     private OutputStream out;
+    private String mailboxPath;
     private FileLock fli;
     private FileLock flo;
     private int mailboxSize;
 
-    public Mailbox(String mailboxName) {
-        // TODO Ouvrir le fichier de la boîte mail (avec gestion des erreurs)
+    public Mailbox(String mailboxPath) throws FileNotFoundException {
+        this.mailboxPath = mailboxPath;
 
+        // Ouvrir le fichier de la boîte mail (avec gestion des erreurs)
+        this.in = new FileInputStream(mailboxPath);
 
-        // TODO Charger tous les mails dans la liste
+        // Charger tous les mails dans la liste
         mails = new ArrayList<>();
+        this.loadMails();
     }
 
     public Mailbox(InputStream in, OutputStream out) {
@@ -33,10 +36,10 @@ public class Mailbox {
 
         this.mails = new ArrayList<>();
 
-        this.readMessages();
+        this.loadMails();
     }
 
-    private void readMessages() {
+    private void loadMails() {
         String from = "";
         String to = "";
         String subject = "";
@@ -46,37 +49,47 @@ public class Mailbox {
 
         String data = "";
 
-        Reader reader = new InputStreamReader(in);
-        while(true) {
-            try {
-                data = StreamUtil.readLine(reader);
-                String[] headerValue = getHeader(data);
-                switch(headerValue[0]) {
-                    case "From":
-                        from = headerValue[1];
-                        break;
-                    case "To":
-                        to = headerValue[1];
-                        break;
-                    case "Subject":
-                        subject = headerValue[1];
-                        break;
-                    case "Date":
-                        date = POP3Utils.DATE_FORMATTER.parse(headerValue[1]);
-                        break;
-                    case "Message-ID":
-                        messageId = headerValue[1];
-                        break;
-                    default:
-                        if(data.equals(".")) {
-                            mails.add(new Mail(from, to, subject, date, messageId, body));
-                        }
-                        body += data;
+        int bytesToRead = 0;
+        try {
+            bytesToRead = in.available();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        if(bytesToRead > 0) {
+            Reader reader = new InputStreamReader(in);
+            while(true) {
+                try {
+                    data = StreamUtil.readLine(reader);
+                    String[] headerValue = getHeader(data);
+                    switch(headerValue[0]) {
+                        case "From":
+                            from = headerValue[1];
+                            break;
+                        case "To":
+                            to = headerValue[1];
+                            break;
+                        case "Subject":
+                            subject = headerValue[1];
+                            break;
+                        case "Date":
+                            date = POP3Utils.DATE_FORMATTER.parse(headerValue[1]);
+                            break;
+                        case "Message-ID":
+                            messageId = headerValue[1];
+                            break;
+                        default:
+                            if(data.equals(".")) {
+                                mails.add(new Mail(from, to, subject, date, messageId, body));
+                            }
+                            body += data;
+                    }
+                } catch (IOException | ParseException e) {
+                    e.printStackTrace();
                 }
-            } catch (IOException | ParseException e) {
-                e.printStackTrace();
             }
         }
+
     }
     public void write() {
         try {
@@ -117,5 +130,18 @@ public class Mailbox {
      */
     private String[] getHeader(String data) {
         return data.split(": ", 2);
+    }
+
+    // ================== STATIC ========================
+    public static Mailbox open(String mailboxName) {
+        String mailboxPath = POP3Utils.MAILBOX_PATH + mailboxName + POP3Utils.MAILBOX_EXTENSION;
+
+        try {
+            return new Mailbox(mailboxPath);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 }
