@@ -118,8 +118,12 @@ public class POP3Context {
         }
     }
 
-    private String readLine() {
-        return "";
+    public void answer(String response) throws IOException {
+        StreamUtil.writeLine(this.out, response);
+    }
+
+    public void answerText(String text) throws IOException {
+        StreamUtil.write(this.out, text);
     }
 
     public void apop(String[] parameters) throws IOException {
