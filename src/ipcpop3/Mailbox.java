@@ -12,30 +12,14 @@ import java.util.List;
 
 public class Mailbox {
     private List<Mail> mails;
-    private InputStream in;
-    private OutputStream out;
-    private String mailboxPath;
-    private FileLock fli;
-    private FileLock flo;
+    private File mailbox;
     private int mailboxSize;
 
     public Mailbox(String mailboxPath) throws FileNotFoundException {
-        this.mailboxPath = mailboxPath;
-
-        // Ouvrir le fichier de la boîte mail (avec gestion des erreurs)
-        this.in = new FileInputStream(mailboxPath);
+        this.mailbox = new File(mailboxPath);
 
         // Charger tous les mails dans la liste
         mails = new ArrayList<>();
-        this.loadMails();
-    }
-
-    public Mailbox(InputStream in, OutputStream out) {
-        this.in = in;
-        this.out = out;
-
-        this.mails = new ArrayList<>();
-
         this.loadMails();
     }
 
@@ -49,14 +33,15 @@ public class Mailbox {
 
         String data = "";
 
-        int bytesToRead = 0;
+        InputStream in = null;
         try {
-            bytesToRead = in.available();
+            in = new FileInputStream(mailbox);
+            this.mailboxSize = in.available();
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        if(bytesToRead > 0) {
+        if(this.mailboxSize > 0) {
             Reader reader = new InputStreamReader(in);
             while(true) {
                 try {
@@ -93,6 +78,7 @@ public class Mailbox {
     }
     public void write() {
         try {
+            OutputStream out = new FileOutputStream(mailbox);
             out.write("".getBytes());
             for(Mail mail : mails) {
                 if(!mail.getState().equals(MailStateEnum.DELETED)) {
@@ -104,11 +90,8 @@ public class Mailbox {
         }
     }
 
-    public void close() throws IOException {
-        this.in.close();
-        this.fli.close();
-        this.out.close();
-        this.flo.close();
+    public void close() {
+
     }
 
     public int getMailCount() {
@@ -119,8 +102,13 @@ public class Mailbox {
         return this.mailboxSize;
     }
 
+    /**
+     *
+     * @param mailNumber le numéro du mail à récupérer. Ce numéro commence à 1
+     * @return
+     */
     public Mail getMail(int mailNumber) {
-        return mails.get(mailNumber);
+        return mails.get(mailNumber - 1);
     }
 
     /**

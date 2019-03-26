@@ -61,7 +61,12 @@ public class POP3Context {
                 try {
                     switch (command[0].toLowerCase()) {
                         case "apop":
-                            apop(command);
+                            try {
+                                apop(command);
+                            }
+                            catch(ArrayIndexOutOfBoundsException e) {
+                                StreamUtil.writeLine(out, "-ERR");
+                            }
                             break;
                         case "stat":
                             stat(command);
@@ -134,7 +139,7 @@ public class POP3Context {
     }
 
     public void help() throws IOException {
-        String availableCommands = "APOP, STAT, RETR [msg], QUIT"; // FIXME Utiliser POP3Utils.AVAILABLE_COMMANDS
+        String availableCommands = String.join(", ", POP3Utils.AVAILABLE_COMMANDS);
         StreamUtil.writeLine(this.getOutputStream(), "+OK available commands are : " + availableCommands);
     }
 

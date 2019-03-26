@@ -41,11 +41,8 @@ public class TransactionState extends POP3State {
 
     public void quit(String[] parameters) throws IOException {
         System.out.println("QUIT Transaction");
-        try {
-            context.getMailbox().write();
-            context.getMailbox().close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        context.getMailbox().write();
+        context.getMailbox().close();
+        StreamUtil.writeLine(context.getOutputStream(), "-OK");
     }
 }
