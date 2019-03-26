@@ -24,13 +24,14 @@ public class TransactionState extends POP3State {
     }
 
     public void retr(String[] parameters) throws IOException {
-        if(parameters.length != 2) {
+        if (parameters.length != 2) {
             this.context.answer("-ERR command format is 'retr <msg-number>'");
         } else {
             String msgNumber = parameters[1];
             int messageNumber = Integer.parseInt(msgNumber);
-            Mail mail = context.getMailbox().getMail(messageNumber);
+
             try {
+                Mail mail = context.getMailbox().getMail(messageNumber);
                 if (mail.getState().equals(MailStateEnum.DELETED)) {
                     throw new Exception("mail " + messageNumber + " is deleted");
                 }
@@ -39,9 +40,7 @@ public class TransactionState extends POP3State {
 
                 this.context.answer("+OK " + message.getBytes().length + " bytes follow");
                 this.context.answerText(message);
-
             } catch (Exception e) {
-
                 this.context.answer("-ERR invalid message number");
             }
         }

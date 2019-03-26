@@ -4,10 +4,9 @@ import ipcpop3.Utils.POP3Utils;
 import ipcpop3.Utils.StreamUtil;
 
 import java.io.*;
-import java.nio.channels.FileLock;
-import java.util.Date;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class Mailbox {
@@ -41,13 +40,16 @@ public class Mailbox {
             e.printStackTrace();
         }
 
-        if(this.mailboxSize > 0) {
-            Reader reader = new InputStreamReader(in);
-            while(true) {
-                try {
-                    data = StreamUtil.readLine(reader);
+        if (this.mailboxSize > 0) {
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(in))) {
+                while(true) {
+                    data = reader.readLine();
+                    if(data == null) {
+                        break;
+                    }
+
                     String[] headerValue = getHeader(data);
-                    switch(headerValue[0]) {
+                    switch (headerValue[0]) {
                         case "From":
                             from = headerValue[1];
                             break;
@@ -64,14 +66,17 @@ public class Mailbox {
                             messageId = headerValue[1];
                             break;
                         default:
-                            if(data.equals(".")) {
+                            if (data.equals(".")) {
                                 mails.add(new Mail(from, to, subject, date, messageId, body));
+                                body = "";
                             }
-                            body += data;
+                            else {
+                                body += data;
+                            }
                     }
-                } catch (IOException | ParseException e) {
-                    e.printStackTrace();
                 }
+            } catch (IOException | ParseException e) {
+                e.printStackTrace();
             }
         }
     }
@@ -79,8 +84,8 @@ public class Mailbox {
     public void write() {
         try (OutputStream out = new FileOutputStream(mailbox)) {
             StreamUtil.write(out, "");
-            for(Mail mail : mails) {
-                if(!mail.getState().equals(MailStateEnum.DELETED)) {
+            for (Mail mail : mails) {
+                if (!mail.getState().equals(MailStateEnum.DELETED)) {
                     out.write(mail.toString().getBytes());
                 }
             }
@@ -102,7 +107,6 @@ public class Mailbox {
     }
 
     /**
-     *
      * @param mailNumber le numéro du mail à récupérer. Ce numéro commence à 1
      * @return
      */
@@ -112,6 +116,7 @@ public class Mailbox {
 
     /**
      * Récupère tout ce qui suit le nom du header (même si ça contient des ':')
+     *
      * @param data
      * @return
      */

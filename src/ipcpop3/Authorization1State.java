@@ -27,7 +27,7 @@ public class Authorization1State extends POP3State {
                         // Alors la mailbox est lockée
                     } else {
                         context.setMailbox(mailbox);
-                        StreamUtil.writeLine(this.context.getOutputStream(),
+                        this.context.answer(
                                 "+OK mailbox has " + mailbox.getMailCount() + " message(s)" +
                                     " (" + mailbox.getMailboxSize() + " bytes)");
                         context.setState(new TransactionState(context));
@@ -39,7 +39,7 @@ public class Authorization1State extends POP3State {
             }
         }
 
-        StreamUtil.writeLine(this.context.getOutputStream(), "-ERR permission denied");
+        this.context.answer("-ERR permission denied");
     }
 
     public void stat(String[] parameters) throws IOException {
