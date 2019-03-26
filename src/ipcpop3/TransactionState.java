@@ -9,11 +9,11 @@ public class TransactionState extends POP3State {
         super(context);
     }
 
-    public void apop(String username, String password) throws IOException {
+    public void apop(String[] parameters) throws IOException {
         System.out.println("APOP Transaction");
     }
 
-    public void stat() throws IOException {
+    public void stat(String[] parameters) throws IOException {
         System.out.println("STAT Transaction");
 
         int nbMessage = this.context.getMailbox().getMailCount(); // nombre de message dans le mail
@@ -23,7 +23,8 @@ public class TransactionState extends POP3State {
         StreamUtil.writeLine(this.context.getOutputStream(), returnMsg);
     }
 
-    public void retr(String msgNumber) throws IOException {
+    public void retr(String[] parameters) throws IOException {
+        String msgNumber = parameters[1];
         int messageNumber = Integer.parseInt(msgNumber);
         Mail mail = context.getMailbox().getMail(messageNumber);
         try {
@@ -38,7 +39,7 @@ public class TransactionState extends POP3State {
     }
 
 
-    public void quit() throws IOException {
+    public void quit(String[] parameters) throws IOException {
         System.out.println("QUIT Transaction");
         try {
             context.getMailbox().write();

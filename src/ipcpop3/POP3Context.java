@@ -61,16 +61,16 @@ public class POP3Context {
                 try {
                     switch (command[0].toLowerCase()) {
                         case "apop":
-                            apop(command[1], command[2]);
+                            apop(command);
                             break;
                         case "stat":
-                            stat();
+                            stat(command);
                             break;
                         case "retr":
-                            retr(command[1]);
+                            retr(command);
                             break;
                         case "quit":
-                            quit();
+                            quit(command);
                             break;
                         case "help":
                             help();
@@ -117,20 +117,20 @@ public class POP3Context {
         return "";
     }
 
-    public void apop(String username, String password) throws IOException {
-        state.apop(username, password);
+    public void apop(String[] parameters) throws IOException {
+        state.apop(parameters);
     }
 
-    public void stat() throws IOException {
-        state.stat();
+    public void stat(String[] parameters) throws IOException {
+        state.stat(parameters);
     }
 
-    public void retr(String numeroMessage) throws IOException {
-        state.retr(numeroMessage);
+    public void retr(String[] parameters) throws IOException {
+        state.retr(parameters);
     }
 
-    public void quit() throws IOException {
-        state.quit();
+    public void quit(String[] parameters) throws IOException {
+        state.quit(parameters);
     }
 
     public void help() throws IOException {

@@ -8,10 +8,10 @@ abstract public class POP3State {
     }
 
     // Les IOException renvoyées concernent les erreurs lors de l'envoi d'une réponse à l'utilisateur
-    abstract public void apop(String username, String password) throws IOException;
-    abstract public void stat() throws IOException;
-    abstract public void retr(String messageNumber) throws IOException;
-    abstract public void quit() throws IOException;
+    abstract public void apop(String[] parameters) throws IOException;
+    abstract public void stat(String[] parameters) throws IOException;
+    abstract public void retr(String[] parameters) throws IOException;
+    abstract public void quit(String[] parameters) throws IOException;
 
     protected POP3Context context;
 }

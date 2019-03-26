@@ -11,11 +11,11 @@ public class Authorization1State extends POP3State {
         super(context);
     }
 
-    public void apop(String username, String password) throws IOException {
+    public void apop(String[] parameters) throws IOException {
         System.out.println("APOP Authorization1");
 
-        String user = username;
-        String pass = password;
+        String user = parameters[1];
+        String pass = parameters[2];
 //        File mailboxFile = new File(mailboxPath);
 
         if(true) { //mailboxFile.exists()) { FIXME Comment tester l'existence ?
@@ -40,15 +40,15 @@ public class Authorization1State extends POP3State {
         StreamUtil.writeLine(this.context.getOutputStream(), "+ERR permission denied");
     }
 
-    public void stat() throws IOException {
+    public void stat(String[] parameters) throws IOException {
         System.out.println("STAT Authorization1");
     }
 
-    public void retr(String messageNumber) throws IOException {
+    public void retr(String[] parameters) throws IOException {
         System.out.println("RETR Authorization1");
     }
 
-    public void quit() throws IOException {
+    public void quit(String[] parameters) throws IOException {
         System.out.println("QUIT Authorization1");
         context.setRunning(false);
     }
