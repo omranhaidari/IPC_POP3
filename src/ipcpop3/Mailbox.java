@@ -74,12 +74,11 @@ public class Mailbox {
                 }
             }
         }
-
     }
+
     public void write() {
-        try {
-            OutputStream out = new FileOutputStream(mailbox);
-            out.write("".getBytes());
+        try (OutputStream out = new FileOutputStream(mailbox)) {
+            StreamUtil.write(out, "");
             for(Mail mail : mails) {
                 if(!mail.getState().equals(MailStateEnum.DELETED)) {
                     out.write(mail.toString().getBytes());
