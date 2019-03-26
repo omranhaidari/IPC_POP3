@@ -27,7 +27,9 @@ public class Authorization1State extends POP3State {
                         // Alors la mailbox est lockée
                     } else {
                         context.setMailbox(mailbox);
-                        StreamUtil.writeLine(this.context.getOutputStream(), "+OK ");
+                        StreamUtil.writeLine(this.context.getOutputStream(),
+                                "+OK mailbox has " + mailbox.getMailCount() + " message(s)" +
+                                    " (" + mailbox.getMailboxSize() + " bytes)");
                         context.setState(new TransactionState(context));
                         return;
                     }
@@ -37,19 +39,24 @@ public class Authorization1State extends POP3State {
             }
         }
 
-        StreamUtil.writeLine(this.context.getOutputStream(), "+ERR permission denied");
+        StreamUtil.writeLine(this.context.getOutputStream(), "-ERR permission denied");
     }
 
     public void stat(String[] parameters) throws IOException {
         System.out.println("STAT Authorization1");
+
+        this.context.answer("-ERR login first");
     }
 
     public void retr(String[] parameters) throws IOException {
         System.out.println("RETR Authorization1");
+
+        this.context.answer("-ERR login first");
     }
 
     public void quit(String[] parameters) throws IOException {
         System.out.println("QUIT Authorization1");
         context.setRunning(false);
+        this.context.answer("+OK POP3 server signing off");
     }
 }

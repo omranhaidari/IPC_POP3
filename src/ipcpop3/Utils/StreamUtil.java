@@ -38,8 +38,4 @@ public class StreamUtil {
         line += "\r\n";
         write(out, line);
     }
-
-    static public void writeText(OutputStream out, String text) {
-        String[] lines = text.split("\n");
-    }
 }
