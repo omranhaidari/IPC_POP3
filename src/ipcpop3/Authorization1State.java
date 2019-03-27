@@ -17,8 +17,15 @@ public class Authorization1State extends POP3State {
     public void apop(String[] parameters) throws IOException {
         System.out.println("APOP Authorization1");
 
-        String user = parameters[1];
-        String pass = parameters[2];
+        String user, pass;
+
+        try {
+            user = parameters[1];
+            pass = parameters[2];
+        } catch (ArrayIndexOutOfBoundsException e) {
+            this.context.answer("-ERR permission denied"); // FIXME Renvoyer message plus détaillé ?
+            return;
+        }
 
         File passFile = new File(POP3Utils.PASS_PATH + user + POP3Utils.PASS_EXTENSION);
 

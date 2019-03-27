@@ -79,12 +79,7 @@ public class POP3Context {
         try {
             switch (command[0].toLowerCase()) {
                 case "apop":
-                    try {
-                        apop(command);
-                    }
-                    catch(ArrayIndexOutOfBoundsException e) {
-                        StreamUtil.writeLine(out, "-ERR");
-                    }
+                    apop(command);
                     break;
                 case "stat":
                     stat(command);
