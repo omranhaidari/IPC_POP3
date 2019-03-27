@@ -17,16 +17,22 @@ public class POP3Context {
     private final OutputStream out;
     private final List<Observer> observers = new ArrayList<>();
 
+    private boolean SSLEnabled;
     private POP3State state;
     private boolean running = true;
     private Mailbox mailbox;
     private String uniqueTimestamp;
 
-    public POP3Context(Socket socket, Reader in, OutputStream out, InputStream inSocket) {
+    public POP3Context(Socket socket, OutputStream out, InputStream inSocket) {
+        this(socket,  out, inSocket, false);
+    }
+
+    public POP3Context(Socket socket, OutputStream out, InputStream inSocket, boolean SSLEnabled) {
         this.socket = socket;
-        this.in = in;
+        this.in = new BufferedReader(new InputStreamReader(inSocket));
         this.out = out;
         this.inSocket = inSocket;
+        this.SSLEnabled = SSLEnabled;
     }
 
     public void setState(POP3State state) {
@@ -58,37 +64,7 @@ public class POP3Context {
             if(!"".equals(request)) {
                 command = getCommand(request);
 
-                try {
-                    switch (command[0].toLowerCase()) {
-                        case "apop":
-                            try {
-                                apop(command);
-                            }
-                            catch(ArrayIndexOutOfBoundsException e) {
-                                StreamUtil.writeLine(out, "-ERR");
-                            }
-                            break;
-                        case "stat":
-                            stat(command);
-                            break;
-                        case "retr":
-                            retr(command);
-                            break;
-                        case "quit":
-                            quit(command);
-                            break;
-                        case "help":
-                            help();
-                            break;
-                        default:
-                            unknownCommand();
-                            break;
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    setRunning(false);
-                }
-
+                dispatchCommand(command);
             }
 
             if(!isRunning()) { // FIXME Ne Fonctionne pas -> Il faudrait tester si in.read() == -1
@@ -96,6 +72,39 @@ public class POP3Context {
                 closing();
                 System.err.println("Connection closed");
             }
+        }
+    }
+
+    private void dispatchCommand(String[] command) {
+        try {
+            switch (command[0].toLowerCase()) {
+                case "apop":
+                    try {
+                        apop(command);
+                    }
+                    catch(ArrayIndexOutOfBoundsException e) {
+                        StreamUtil.writeLine(out, "-ERR");
+                    }
+                    break;
+                case "stat":
+                    stat(command);
+                    break;
+                case "retr":
+                    retr(command);
+                    break;
+                case "quit":
+                    quit(command);
+                    break;
+                case "help":
+                    help();
+                    break;
+                default:
+                    unknownCommand();
+                    break;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            setRunning(false);
         }
     }
 
@@ -156,9 +165,8 @@ public class POP3Context {
         POP3Context context;
         try {
             out = socket.getOutputStream();
-            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             InputStream inSocket = socket.getInputStream();
-            context = new POP3Context(socket, in, out, inSocket);
+            context = new POP3Context(socket, out, inSocket);
             context.setState(new Authorization1State(context));
 
             return context;
