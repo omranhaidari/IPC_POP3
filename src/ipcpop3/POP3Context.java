@@ -200,4 +200,8 @@ public class POP3Context {
     public OutputStream getOutputStream() {
         return this.out;
     }
+
+    public String getUniqueTimestamp() {
+        return this.uniqueTimestamp;
+    }
 }

@@ -6,6 +6,8 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 public class Authorization1State extends POP3State {
     public Authorization1State(POP3Context context) {
@@ -23,7 +25,15 @@ public class Authorization1State extends POP3State {
         if (passFile.exists()) {
             BufferedReader in = new BufferedReader(new FileReader(passFile));
             String retrievedPass = in.readLine();
-            if (pass.equals(retrievedPass)) { // FIXME Si le mdp est correct
+            String checksum;
+            try {
+                checksum = new String(MessageDigest.getInstance("MD5").digest((this.context.getUniqueTimestamp() + retrievedPass).getBytes()));
+            } catch (NoSuchAlgorithmException e) {
+                System.err.println("Algorithm MD5 not found");
+                checksum = retrievedPass;
+            }
+
+            if (pass.equals(checksum) || pass.equals(retrievedPass)) {
                 try {
                     Mailbox mailbox = Mailbox.open(user);
                     if (mailbox == null) {
