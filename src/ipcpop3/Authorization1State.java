@@ -27,7 +27,7 @@ public class Authorization1State extends POP3State {
             String retrievedPass = in.readLine();
             String checksum;
             try {
-                checksum = new String(MessageDigest.getInstance("MD5").digest((retrievedPass + this.context.getUniqueTimestamp()).getBytes()));
+                checksum = new String(MessageDigest.getInstance("MD5").digest((this.context.getUniqueTimestamp() + retrievedPass).getBytes()));
             } catch (NoSuchAlgorithmException e) {
                 System.err.println("Algorithm MD5 not found");
                 checksum = retrievedPass;
