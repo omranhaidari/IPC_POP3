@@ -1,10 +1,11 @@
 package ipcpop3;
 
 import ipcpop3.Utils.POP3Utils;
-import ipcpop3.Utils.StreamUtil;
 
-import java.io.*;
-import java.nio.channels.FileLock;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 
 public class Authorization1State extends POP3State {
     public Authorization1State(POP3Context context) {
@@ -16,20 +17,22 @@ public class Authorization1State extends POP3State {
 
         String user = parameters[1];
         String pass = parameters[2];
-//        File mailboxFile = new File(mailboxPath);
 
-        if(true) { //mailboxFile.exists()) { FIXME Comment tester l'existence ?
-//            mailboxFile = null;
-            if(true) { // FIXME Si le mdp est correct
+        File passFile = new File(POP3Utils.PASS_PATH + user + POP3Utils.PASS_EXTENSION);
+
+        if (passFile.exists()) {
+            BufferedReader in = new BufferedReader(new FileReader(passFile));
+            String retrievedPass = in.readLine();
+            if (pass.equals(retrievedPass)) { // FIXME Si le mdp est correct
                 try {
                     Mailbox mailbox = Mailbox.open(user);
-                    if(mailbox == null) {
+                    if (mailbox == null) {
                         // Alors la mailbox est lockée
                     } else {
                         context.setMailbox(mailbox);
                         this.context.answer(
                                 "+OK mailbox has " + mailbox.getMailCount() + " message(s)" +
-                                    " (" + mailbox.getMailboxSize() + " bytes)");
+                                        " (" + mailbox.getMailboxSize() + " bytes)");
                         context.setState(new TransactionState(context));
                         return;
                     }

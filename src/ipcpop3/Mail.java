@@ -1,5 +1,7 @@
 package ipcpop3;
 
+import ipcpop3.Utils.POP3Utils;
+
 import java.util.Date;
 
 public class Mail {
@@ -23,13 +25,17 @@ public class Mail {
 
     @Override
     public String toString() {
-        return "From: " + from + '\n' +
-                "To: " + to + '\n' +
-                "Subject: " + subject + '\n' +
-                "Date: " + date + '\n' +
-                "MessageID: " + messageID + '\n' +
-                body + '\n' +
-                '.' + '\n';
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("From: ").append(from).append('\r').append('\n');
+        stringBuilder.append("To: ").append(to).append('\r').append('\n');
+        stringBuilder.append("Subject: ").append(subject).append('\r').append('\n');
+        stringBuilder.append("Date: ").append(POP3Utils.DATE_FORMATTER.format(date)).append('\r').append('\n');
+        stringBuilder.append("MessageID: ").append(messageID).append('\r').append('\n');
+        stringBuilder.append('\r').append('\n');
+        stringBuilder.append(body).append('\r').append('\n');
+        stringBuilder.append('.').append('\r').append('\n');
+
+        return stringBuilder.toString();
     }
 
     public MailStateEnum getState() {
