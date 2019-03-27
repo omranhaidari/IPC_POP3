@@ -30,7 +30,7 @@ public class Mail {
         stringBuilder.append("To: ").append(to).append('\r').append('\n');
         stringBuilder.append("Subject: ").append(subject).append('\r').append('\n');
         stringBuilder.append("Date: ").append(POP3Utils.DATE_FORMATTER.format(date)).append('\r').append('\n');
-        stringBuilder.append("MessageID: ").append(messageID).append('\r').append('\n');
+        //stringBuilder.append("Message-ID: ").append(messageID).append('\r').append('\n');
         stringBuilder.append('\r').append('\n');
         stringBuilder.append(body).append('\r').append('\n');
         stringBuilder.append('.').append('\r').append('\n');
