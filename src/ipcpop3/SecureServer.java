@@ -6,16 +6,16 @@ import javax.net.ssl.SSLServerSocketFactory;
 public class SecureServer extends Server {
 
     public SecureServer() {
-        super(8043, true);
+        this(8043);
     }
 
     public SecureServer(int customPort) {
-        super(customPort, true);
+        super(customPort, true, "POP3 SSL Server");
     }
 
     @Override
     public void init() throws Exception {
-        super.init();
+        this.usersConnected = new UsersConnections(this.serverName);
 
         ServerSocketFactory factory = SSLServerSocketFactory.getDefault();
 

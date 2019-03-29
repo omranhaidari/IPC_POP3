@@ -53,27 +53,26 @@ public class POP3Context {
                 if(inSocket.available() > 0) {
                     request = StreamUtil.readLine(in);
                     request = request.trim();
-                    System.out.println("User [" + this.hashCode() + "] sent : '" + request.trim() + "'");
+//                    System.out.println("User [" + this.hashCode() + "] sent : '" + request.trim() + "'");
                 }
             } catch (IOException e) {
                 e.printStackTrace();
             }
 
             if(!"".equals(request)) {
-                command = getCommand(request);
-
-                dispatchCommand(command);
+                dispatchCommand(request);
             }
 
             if(!isRunning()) { // FIXME Ne Fonctionne pas -> Il faudrait tester si in.read() == -1
                 this.notifyAllForRemoval();
                 closing();
-                System.err.println("Connection closed");
             }
         }
     }
 
-    private void dispatchCommand(String[] command) {
+    private void dispatchCommand(String request) {
+        String[] command = getCommand(request);
+
         try {
             switch (command[0].toLowerCase()) {
                 case "apop":
@@ -92,6 +91,7 @@ public class POP3Context {
                     help();
                     break;
                 default:
+                    System.out.println("User [" + this.hashCode() + "] sent : '" + String.join(" ", command) + "'");
                     unknownCommand();
                     break;
             }

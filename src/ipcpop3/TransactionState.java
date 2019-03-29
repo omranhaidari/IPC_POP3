@@ -10,12 +10,12 @@ public class TransactionState extends POP3State {
     }
 
     public void apop(String[] parameters) throws IOException {
-        System.out.println("APOP Transaction");
+//        System.out.println("APOP Transaction");
         this.context.answer("-ERR a mailbox is already opened");
     }
 
     public void stat(String[] parameters) throws IOException {
-        System.out.println("STAT Transaction");
+//        System.out.println("STAT Transaction");
 
         int nbMessage = this.context.getMailbox().getMailCount(); // nombre de message dans le mail
         int sizeMessage = this.context.getMailbox().getMailboxSize(); // taille du fichier en octets
@@ -49,7 +49,7 @@ public class TransactionState extends POP3State {
 
 
     public void quit(String[] parameters) throws IOException {
-        System.out.println("QUIT Transaction");
+//        System.out.println("QUIT Transaction");
         try {
             Mailbox mailbox = context.getMailbox();
             mailbox.write();
