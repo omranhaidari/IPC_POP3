@@ -65,7 +65,7 @@ public class Server {
                         }
                     }).start();
                 } else {
-                    // TODO Log l'erreur (user n'a pas pu se connecter)
+                    System.out.println("Error: L'utilisateur na pas pu se connecter");
                 }
 
 

@@ -24,7 +24,7 @@ public class POP3Context {
     private String uniqueTimestamp;
 
     public POP3Context(Socket socket, OutputStream out, InputStream inSocket) {
-        this(socket,  out, inSocket, false);
+        this(socket, out, inSocket, false);
     }
 
     public POP3Context(Socket socket, OutputStream out, InputStream inSocket, boolean SSLEnabled) {
@@ -46,8 +46,6 @@ public class POP3Context {
 
     public void run() {
         String request;
-        int numeroMessage = -1;
-        String username = null, password = null;
         String[] command;
         while(running) {
             request = "";
@@ -156,12 +154,11 @@ public class POP3Context {
     }
 
     public static POP3Context createContext(Socket socket) {
-        OutputStream out = null;
         POP3Context context;
         try {
-            out = socket.getOutputStream();
-            InputStream inSocket = socket.getInputStream();
-            context = new POP3Context(socket, out, inSocket);
+            OutputStream out = socket.getOutputStream();
+            InputStream in = socket.getInputStream();
+            context = new POP3Context(socket, out, in);
             context.setState(new Authorization1State(context));
 
             return context;
@@ -169,6 +166,7 @@ public class POP3Context {
             e.printStackTrace();
             // TODO Gérer déconnexion impromptue
         }
+
         return null;
     }
 
