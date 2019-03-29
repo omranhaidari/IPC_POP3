@@ -8,48 +8,47 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Server {
+public class Server extends Thread {
 
     protected int port;
     protected boolean SSLEnabled = false;
+    protected String serverName;
 
     protected ServerSocket serverSocket;
     protected UsersConnections usersConnected;
 
     public Server() {
-        this.port = 8025;
+        this(8025);
     }
 
     public Server(int customPort) {
-        this.port = customPort;
+        this(customPort, false, "POP3 Server");
     }
 
-    public Server(int customPort, boolean secure) {
+    public Server(int customPort, boolean secure, String serverName) {
         this.port = customPort;
         this.SSLEnabled = secure;
-    }
-
-    public void start() {
-        try {
-            this.init();
-
-            this.run();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        this.serverName = serverName;
     }
 
     public void init() throws Exception {
-        usersConnected = new UsersConnections();
+        usersConnected = new UsersConnections(this.serverName);
         serverSocket = new ServerSocket(this.port);
     }
 
     public void run() {
         try {
+            this.init();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return;
+        }
+
+        try {
             while (true) {
-                System.err.println("Attente de connexion... (" + usersConnected.getUsersCount() + " users currently connected)");
+                System.err.println("["+ serverName +"]: Attente de connexion... (" + usersConnected.getUsersCount() + " users currently connected)");
                 Socket socket = serverSocket.accept();
-                System.err.println("Connexion établie");
+                System.err.println("["+ serverName +"]: Connexion établie");
 
                 POP3Context context = POP3Context.createContext(socket);
                 if (context != null) {
@@ -78,12 +77,20 @@ public class Server {
     static class UsersConnections implements Observer {
 
         List<POP3Context> usersConnected = new ArrayList<>();
+        String serverName;
+
+        public UsersConnections(String serverName) {
+            this.serverName = serverName;
+        }
 
         @Override
         public void remove(Object object) {
             if(object instanceof POP3Context) {
                 usersConnected.remove(object);
             }
+
+            System.err.println("[" + serverName + "]: Connection closed.");
+            System.err.println("[" + serverName + "]: " + usersConnected.size() + " user(s) still connected.");
         }
 
         public void addUser(POP3Context user) {

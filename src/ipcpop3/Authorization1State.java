@@ -15,7 +15,7 @@ public class Authorization1State extends POP3State {
     }
 
     public void apop(String[] parameters) throws IOException {
-        System.out.println("APOP Authorization1");
+//        System.out.println("APOP Authorization1");
 
         String user, pass;
 
@@ -23,7 +23,7 @@ public class Authorization1State extends POP3State {
             user = parameters[1];
             pass = parameters[2];
         } catch (ArrayIndexOutOfBoundsException e) {
-            this.context.answer("-ERR permission denied"); // FIXME Renvoyer message plus détaillé ?
+            this.context.answer("-ERR command format is 'apop <user> <pass>'");
             return;
         }
 
@@ -63,19 +63,19 @@ public class Authorization1State extends POP3State {
     }
 
     public void stat(String[] parameters) throws IOException {
-        System.out.println("STAT Authorization1");
+//        System.out.println("STAT Authorization1");
 
         this.context.answer("-ERR login first");
     }
 
     public void retr(String[] parameters) throws IOException {
-        System.out.println("RETR Authorization1");
+//        System.out.println("RETR Authorization1");
 
         this.context.answer("-ERR login first");
     }
 
     public void quit(String[] parameters) throws IOException {
-        System.out.println("QUIT Authorization1");
+//        System.out.println("QUIT Authorization1");
         context.setRunning(false);
         this.context.answer("+OK POP3 server signing off");
     }
