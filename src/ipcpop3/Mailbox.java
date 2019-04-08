@@ -12,10 +12,15 @@ import java.util.List;
 public class Mailbox {
     private List<Mail> mails;
     private File mailbox;
+    private File mailboxLock;
     private int mailboxSize;
 
-    public Mailbox(String mailboxPath) throws FileNotFoundException {
+    public Mailbox(String mailboxPath) throws IOException {
         this.mailbox = new File(mailboxPath);
+        this.mailboxLock = new File(mailbox.getPath() + ".lock");
+        if(!this.mailboxLock.createNewFile()) {
+            throw new IOException("Mailbox is locked");
+        }
 
         // Charger tous les mails dans la liste
         mails = new ArrayList<>();
@@ -95,7 +100,7 @@ public class Mailbox {
     }
 
     public void close() {
-
+        this.mailboxLock.delete();
     }
 
     public int getMailCount() {
@@ -130,7 +135,7 @@ public class Mailbox {
 
         try {
             return new Mailbox(mailboxPath);
-        } catch (FileNotFoundException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
 
