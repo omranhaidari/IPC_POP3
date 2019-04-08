@@ -6,13 +6,18 @@ import java.io.Reader;
 
 public class StreamUtil {
 
-    static public String readLine(Reader in) throws IOException {
+    static public String readLine(Reader in) throws IOException, TCPException {
         String line = "";
         char data;
+        int returnData;
         boolean crReceived = false;
         do
         {
-            data = (char) in.read();
+            returnData = in.read();
+            data = (char) returnData;
+            if(returnData == -1) {
+                throw new TCPException("");
+            }
             line += data;
             if(crReceived && data != '\n') {
                 crReceived = false;

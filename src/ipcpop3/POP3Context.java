@@ -3,6 +3,7 @@ package ipcpop3;
 import ipcpop3.Utils.Observer;
 import ipcpop3.Utils.POP3Utils;
 import ipcpop3.Utils.StreamUtil;
+import ipcpop3.Utils.TCPException;
 
 import java.io.*;
 import java.net.Socket;
@@ -56,15 +57,12 @@ public class POP3Context {
 //                    System.out.println("User [" + this.hashCode() + "] sent : '" + request.trim() + "'");
             } catch (IOException e) {
                 e.printStackTrace();
+            } catch (TCPException e) {
+                this.closing();
             }
 
             if(!"".equals(request)) {
                 dispatchCommand(request);
-            }
-
-            if(!isRunning()) { // FIXME Ne Fonctionne pas -> Il faudrait tester si in.read() == -1
-                this.notifyAllForRemoval();
-                closing();
             }
         }
     }
@@ -109,6 +107,9 @@ public class POP3Context {
     }
 
     private void closing() {
+        this.setRunning(false);
+        this.notifyAllForRemoval();
+        this.mailbox.close();
         try {
             in.close();
             inSocket.close();
