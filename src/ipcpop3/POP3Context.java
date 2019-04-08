@@ -50,11 +50,10 @@ public class POP3Context {
         while(running) {
             request = "";
             try {
-                if(inSocket.available() > 0) {
-                    request = StreamUtil.readLine(in);
-                    request = request.trim();
+                request = StreamUtil.readLine(in);
+                System.out.println(request);
+                request = request.trim();
 //                    System.out.println("User [" + this.hashCode() + "] sent : '" + request.trim() + "'");
-                }
             } catch (IOException e) {
                 e.printStackTrace();
             }
